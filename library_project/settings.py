@@ -76,3 +76,9 @@ USE_L10N = True
 USE_TZ = bool(os.environ.get('DJANGO_USE_TZ', 'True').lower() == 'true')
 
 STATIC_URL = '/static/'
+
+# Django Rest Framework default configuration
+REST_FRAMEWORK = {
+    'DEFAULT_RENDERER_CLASSES': ['rest_framework.renderers.JSONRenderer'],
+    'DEFAULT_PARSER_CLASSES': ['rest_framework.parsers.JSONParser']
+}
