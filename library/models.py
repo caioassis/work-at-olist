@@ -4,6 +4,8 @@ from django.db import models
 class Author(models.Model):
     name = models.CharField(verbose_name='Name', max_length=60)
 
+    objects = models.Manager()
+
     def __str__(self):
         return self.name
 
