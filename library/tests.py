@@ -1,8 +1,7 @@
+import os
 from django.core.management import call_command
 from django.test import TestCase
 from .models import Author
-import os
-from io import StringIO
 
 
 class AuthorTestCase(TestCase):
