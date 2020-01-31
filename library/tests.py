@@ -46,9 +46,9 @@ class AuthorAPITestCase(APITestCase):
     def test_author_list_view(self):
         response = self.client.get('/authors/')
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data['count'], 2)
         expected_author_id_list = [1, 2]
-        author_id_list = list(map(lambda author: author['id'], response.data))
+        author_id_list = list(map(lambda author: author['id'], response.data['results']))
         self.assertEqual(expected_author_id_list, author_id_list)
 
     def test_retrieve_author_view(self):
@@ -70,9 +70,9 @@ class AuthorAPITestCase(APITestCase):
         """
         response = self.client.get('/authors/', {'name__icontains': 'Dan'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data['count'], 1)
         expected_authors = [{'id': 2, 'name': 'Dan Brown'}]
-        authors = list(map(lambda author: {'id': author['id'], 'name': author['name']}, response.data))
+        authors = list(map(lambda author: {'id': author['id'], 'name': author['name']}, response.data['results']))
         self.assertEqual(expected_authors, authors)
 
 
@@ -122,10 +122,10 @@ class BookAPITestCase(TestCase):
 
     def test_book_list_view(self):
         response = self.client.get('/books/')
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data['count'], 1)
         Book.objects.create(name='Book 2', edition=1, publication_year=timezone.now().year)
         response = self.client.get('/books/')
-        self.assertEqual(len(response.data), 2)
+        self.assertEqual(response.data['count'], 2)
 
     def test_create_new_book(self):
         book = {'name': 'Book 2', 'edition': 2, 'publication_year': 1920, 'authors': [self.author3.pk]}
@@ -157,6 +157,6 @@ class BookAPITestCase(TestCase):
         """
         response = self.client.get('/books/', {'name__icontains': 'Book'})
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.data), 1)
+        self.assertEqual(response.data['count'], 1)
         response = self.client.get('/books/', {'name__icontains': 'Book', 'publication_year': 1970})
-        self.assertEqual(len(response.data), 0)
+        self.assertEqual(response.data['count'], 0)
