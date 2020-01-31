@@ -1,12 +1,13 @@
 import os
+from decouple import config
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
-SECRET_KEY = os.environ.get('DJANGO_SECRET_KEY')
+SECRET_KEY = config('DJANGO_SECRET_KEY')
 
-DEBUG = bool(os.environ.get('DJANGO_DEBUG', 'False').lower() == 'true')
+DEBUG = config('DJANGO_DEBUG', default=False, cast=bool)
 
-ALLOWED_HOSTS = [host.strip() for host in os.environ.get('DJANGO_ALLOWED_HOSTS', '*').split(',')]
+ALLOWED_HOSTS = config('DJANGO_ALLOWED_HOSTS', default='*', cast=lambda v: [s.strip() for s in v.split(',')])
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -68,13 +69,13 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = os.environ.get('DJANGO_TIME_ZONE', 'UTC')
+TIME_ZONE = config('DJANGO_TIME_ZONE', default='UTC')
 
 USE_I18N = True
 
 USE_L10N = True
 
-USE_TZ = bool(os.environ.get('DJANGO_USE_TZ', 'True').lower() == 'true')
+USE_TZ = config('DJANGO_USE_TZ', default=True, cast=bool)
 
 STATIC_URL = '/static/'
 
