@@ -95,3 +95,45 @@ class BookTestCase(TestCase):
         self.assertEqual(books.count(), 3)
         books.delete()
         self.assertEqual(books.count(), 0)
+
+
+class BookAPITestCase(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.client = APIClient()
+        cls.author1 = Author.objects.create(name='Dan Brown')
+        cls.author2 = Author.objects.create(name='J. K. Rowling')
+        cls.author3 = Author.objects.create(name='George R. R. Martin')
+        cls.book = Book.objects.create(name='Book 1', edition=1, publication_year=timezone.now().year)
+        cls.book.authors.set([cls.author1, cls.author2])
+
+    def test_book_list_view(self):
+        response = self.client.get('/books/')
+        self.assertEqual(len(response.data), 1)
+        Book.objects.create(name='Book 2', edition=1, publication_year=timezone.now().year)
+        response = self.client.get('/books/')
+        self.assertEqual(len(response.data), 2)
+
+    def test_create_new_book(self):
+        book = {'name': 'Book 2', 'edition': 2, 'publication_year': 1920, 'authors': [self.author3.pk]}
+        response = self.client.post('/books/', book, format='json')
+        self.assertEqual(response.status_code, 201)
+        self.assertEqual(response.data['id'], 2)
+        self.assertEqual(Book.objects.all().count(), 2)
+        self.assertNotIn([self.author1.pk, self.author2.pk], response.data['authors'])
+        self.assertIn(self.author3.pk, response.data['authors'])
+
+    def test_update_book(self):
+        book_id = self.book.pk
+        response = self.client.patch(f'/books/{book_id}/', {'name': 'New Book'}, content_type='application/json')
+        updated_book = Book.objects.get(pk=book_id)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(updated_book.name, 'New Book')
+
+    def test_delete_book(self):
+        book_id = self.book.pk
+        response = self.client.delete(f'/books/{book_id}/')
+        self.assertEqual(response.status_code, 204)  # Returns no content
+        book_count = Book.objects.all().count()
+        self.assertEqual(book_count, 0)
