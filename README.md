@@ -1,3 +1,60 @@
+# Library Project
+
+## Description
+
+Assessment project of Olist, which exposes an API of a library.
+
+
+## Requirements
+
+- Virtualenv
+- Python 3.6 or higher
+- Pip 3.6
+- Django 2.2.9 (LTS version)
+- Django Rest Framework 3.11
+- Django Filter 2.2
+
+## Installation
+> The following steps are meant to work in Linux OS. Windows commands may differ.
+
+Clone this project.
+```
+git clone https://github.com/caioassis/work-at-olist
+```
+Create a virtual environment (make sure to have pip3.6 installed) and activate it.
+```
+pip3.6 install virtualenv
+virtualenv -p PYTHON3_PATH env
+source env/bin/activate
+```
+> Change PYTHON3_PATH to your python 3 executable path.
+
+Install project packages.
+```
+pip install -r requirements.txt
+```
+Create a .env file as a copy of .env.example and set the variables.
+
+Migrate Database
+```
+python manage.py migrate
+```
+Finally, run your server.
+```
+python manage.py runserver
+```
+## Testing
+Execute library tests.
+```
+python manage.py test
+```
+
+## Available Commands
+- import_authors *file* - Csv file containing a "name" header and authors names (one per line) to be imported to database.
+
+## Documentation
+Available in /docs/ endpoint.
+
 # Work at Olist
 
 [Olist](https://olist.com/) is a company that offers an integration platform for sellers and marketplaces allowing them to sell their products across multiple channels.
