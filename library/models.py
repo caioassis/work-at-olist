@@ -13,6 +13,7 @@ class Author(models.Model):
     class Meta:
         verbose_name = 'Author'
         verbose_name_plural = 'Authors'
+        ordering = ['id']
         indexes = [
             models.Index(fields=['name'], name='idx_author_name')
         ]
@@ -32,6 +33,7 @@ class Book(models.Model):
     class Meta:
         verbose_name = 'Book'
         verbose_name_plural = 'Books'
+        ordering = ['id']
         indexes = [
             models.Index(fields=['name'], name='idx_book_name'),
             models.Index(fields=['publication_year'], name='idx_book_publication_year')
