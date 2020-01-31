@@ -63,6 +63,18 @@ class AuthorAPITestCase(APITestCase):
         response = self.client.get('/authors/50/')
         self.assertEqual(response.status_code, 404)
 
+    def test_author_list_view_with_filters(self):
+        """
+        Test Author List View applying name filter.
+        :return:
+        """
+        response = self.client.get('/authors/', {'name__icontains': 'Dan'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        expected_authors = [{'id': 2, 'name': 'Dan Brown'}]
+        authors = list(map(lambda author: {'id': author['id'], 'name': author['name']}, response.data))
+        self.assertEqual(expected_authors, authors)
+
 
 class BookTestCase(TestCase):
 
@@ -137,3 +149,14 @@ class BookAPITestCase(TestCase):
         self.assertEqual(response.status_code, 204)  # Returns no content
         book_count = Book.objects.all().count()
         self.assertEqual(book_count, 0)
+
+    def test_book_list_view_with_filters(self):
+        """
+        Test Book List view applying name and publication_year filters.
+        :return:
+        """
+        response = self.client.get('/books/', {'name__icontains': 'Book'})
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.data), 1)
+        response = self.client.get('/books/', {'name__icontains': 'Book', 'publication_year': 1970})
+        self.assertEqual(len(response.data), 0)
