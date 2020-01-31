@@ -1,8 +1,9 @@
 import os
 from django.core.management import call_command
 from django.test import TestCase
+from django.utils import timezone
 from rest_framework.test import APITestCase, APIClient
-from .models import Author
+from .models import Author, Book
 
 
 class AuthorTestCase(TestCase):
@@ -61,3 +62,36 @@ class AuthorAPITestCase(APITestCase):
     def test_author_does_not_exist_returns_404(self):
         response = self.client.get('/authors/50/')
         self.assertEqual(response.status_code, 404)
+
+
+class BookTestCase(TestCase):
+
+    @classmethod
+    def setUpTestData(cls):
+        cls.author1 = Author.objects.create(name='Dan Brown')
+        cls.author2 = Author.objects.create(name='J. K. Rowling')
+        cls.author3 = Author.objects.create(name='George R. R. Martin')
+
+    def test_create_new_book(self):
+        book = Book.objects.create(name='Book 1', publication_year=timezone.now().year)
+        book.authors.set([self.author1, self.author2])
+        self.assertEqual(book.name, 'Book 1')
+        self.assertEqual(book.edition, 1)
+        self.assertIn(self.author1, book.authors.all())
+        self.assertNotIn(self.author3, book.authors.all())
+        self.assertEqual(book.authors.count(), 2)
+
+    def test_delete_book(self):
+        Book.objects.bulk_create(
+            [
+                Book(name='Book 1', publication_year=timezone.now().year),
+                Book(name='Book 2', publication_year=timezone.now().year-1),
+                Book(name='Book 3', publication_year=timezone.now().year-2),
+                Book(name='Book 4', publication_year=timezone.now().year-3)
+            ]
+        )
+        books = Book.objects.all()
+        books.first().delete()
+        self.assertEqual(books.count(), 3)
+        books.delete()
+        self.assertEqual(books.count(), 0)
