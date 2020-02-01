@@ -11,6 +11,7 @@ idna==2.8
 itypes==1.1.0
 Jinja2==2.11.1
 MarkupSafe==1.1.1
+psycopg2==2.8.4
 python-decouple==3.3
 pytz==2019.3
 requests==2.22.0
