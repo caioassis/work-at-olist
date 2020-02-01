@@ -55,6 +55,13 @@ python manage.py test
 ## Documentation
 Available in /docs/ endpoint.
 
+## Production
+The project is deployed in Heroku and running on https://library-project-olist.herokuapp.com/.
+
+## Postman Collection
+
+A Postman collection of requests for this project is available on https://www.getpostman.com/collections/5b0d0d83954d6d1f2370.
+
 # Work at Olist
 
 [Olist](https://olist.com/) is a company that offers an integration platform for sellers and marketplaces allowing them to sell their products across multiple channels.
